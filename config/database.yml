@@ -1,9 +1,9 @@
 default: &default
   adapter: postgresql
   encoding: unicode
-  host: localhost
-  user: railsecommerce
-  password: bootcamp_onebitcode
+  host: <%= ENV['APP_DB_HOST'] || "localhost" %>
+  user: <%= ENV['APP_DB_USERNAME'] || "railsecommerce" %>
+  password: <%= ENV['APP_DB_PASSWORD'] || "bootcamp_onebitcode" %>
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
 
 development:
