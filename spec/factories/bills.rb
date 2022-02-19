@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :bill do
-    order { nil }
+    order 
     status_bill { false }
   end
 end
