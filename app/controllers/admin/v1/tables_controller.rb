@@ -33,7 +33,7 @@ module Admin::V1
         end
     
         def searchable_params
-          params.permit({ search: :table_number }, { order: {} }, :page, :length)
+          params.permit( { order: {} }, :page, :length)
         end
     
         def table_params

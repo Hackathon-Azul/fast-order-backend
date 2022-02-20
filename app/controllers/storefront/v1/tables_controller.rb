@@ -2,7 +2,7 @@ module Storefront::V1
   class TablesController < ApplicationController
 
     def index
-      @tables = Table.order(:id)
+      @tables = Table.where(avaliable_table: true).order(:id)
     end
   end
 end
