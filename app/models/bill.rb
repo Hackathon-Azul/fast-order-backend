@@ -5,8 +5,8 @@ class Bill < ApplicationRecord
   before_validation :set_values
 
   def set_values
-    total = 0
-    self.total = order.quantity * order.product.price
+    total_value = 0
+    self.total = order.quantity * order.product.price + total_value
     self.status_bill = true
   end
 end

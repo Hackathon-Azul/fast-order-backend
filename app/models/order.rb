@@ -10,12 +10,11 @@ class Order < ApplicationRecord
 
   before_validation :set_price
 
-  def set_price
-    total_value = 0
-    order_items.each do |oi|
-      total += oi.quantity * oi.product.price
+    def set_price
+      total_value = 0
+      order_items.each do |oi|
+        total_value += oi.quantity * oi.product.price
+    end
+      self.total = total_value
   end
-    self.total = total_value
-end
-
 end
