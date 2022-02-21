@@ -11,6 +11,17 @@ Order.destroy_all
 Category.destroy_all
 Bill.destroy_all
 Table.destroy_all
+User.destroy_all
+
+
+puts 'Criando Usuários'
+
+
+User.create(name: "Gisele", email: "test@test.com", password: "123456", password_confirmation: "123456")
+
+User.create(name: "Paulo", email: "test3@test.com", password: "123456", password_confirmation: "123456")
+
+User.create(name: "Michael", email: "test2@test.com", password: "123456", password_confirmation: "123456")
 
 puts 'Criando Categorias'
 
