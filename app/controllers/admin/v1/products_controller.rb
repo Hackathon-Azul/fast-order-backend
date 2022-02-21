@@ -1,21 +1,4 @@
-#module Admin::V1
-
-#    class ProductsController < ApiController
-
- #     def index
-  #       @products = load_products
-   #   end
-
-    #  private
-
-     # def load_products
-      #  permitted = params.permit({ search: :name }, { order: {} }, :page, :length)
-       # Admin::ModelLoadingService.new(Product.all, permitted).call
-     # end
-    #end
- # end
- 
- module Admin::V1
+  module Admin::V1
   class ProductsController < ApiController
     before_action :load_products, only: [:show, :update, :destroy]
   
@@ -25,7 +8,7 @@
     end
   
         def create
-          @product = Category.new
+          @product = Product.new
           @product.attributes = product_params
           save_product!
         end
@@ -55,7 +38,7 @@
   
       def product_params
         return {} unless params.has_key?(:product)
-      params.require(:product).permit(:id, :name)
+      params.require(:product).permit(:id, :name, :description, :price, :avaiable, :category_id)
         end
   
         def save_product!

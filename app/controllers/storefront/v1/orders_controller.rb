@@ -23,7 +23,8 @@ module Storefront::V1
   def order_params
     params.require(:order).permit(
       :id, :client_name, :table_id, :user_id, :status, :total, 
-       order_items_attributes: [:quantity, :product_id]
+       order_items_attributes: [:quantity, :product_id, :comments]
     )
   end
+end
 end

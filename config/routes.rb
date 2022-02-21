@@ -25,7 +25,7 @@ namespace :storefront, defaults: { format: :json } do
       resources :products, only: [:index, :show]
       resources :categories, only: :index
       resources :tables, only: :index
-      resources :orders, only: [:index, :show]
+      resources :orders, only: [:create, :show]
     end
   end
 end
