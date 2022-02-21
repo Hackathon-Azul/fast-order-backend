@@ -16,9 +16,12 @@ User.destroy_all
 
 puts 'Criando Usuários'
 
-User.create(name: "Larissa", email: "test@test.com", password: "123456", password_confirmation: "123456")
+
+User.create(name: "Gisele", email: "test@test.com", password: "123456", password_confirmation: "123456")
+
+User.create(name: "Paulo", email: "test3@test.com", password: "123456", password_confirmation: "123456")
+
 User.create(name: "Michael", email: "test2@test.com", password: "123456", password_confirmation: "123456")
-User.create(name: "Leandro", email: "test3@test.com", password: "123456", password_confirmation: "123456")
 
 puts 'Criando Categorias'
 
