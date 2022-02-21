@@ -38,7 +38,7 @@ module Admin::V1
     
         def order_item_params
           return {} unless params.has_key?(:order_item)
-        params.require(:order_item).permit(:id, :product_id)
+        params.require(:order_item).permit(:id, :product_id, :quantity, :comments, :order_id)
           end
     
           def save_order_item!

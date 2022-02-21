@@ -1,10 +1,11 @@
 module Storefront::V1
   class ProductsController < ApplicationController
+    before_action :load_products, only: [:show]
 
       def index
-          @service = Storefront::ProductsFilterService.new(search_params)
-          @service.call
-        end
+        @loading_service = Admin::ModelLoadingService.new(Product.all, search_params)
+        @loading_service.call
+      end
         
         def show
           @product = Product.find(params[:id])
@@ -12,9 +13,13 @@ module Storefront::V1
 
     private
 
+    def load_products
+      @product = Product.find(params[:id])
+    end
+
+
     def search_params
-    params.permit(:search, :productable, :page, :length, order: {}, category_ids: [], 
-                      price: [:min, :max], release_date: [:min, :max]).merge(productable: :game)
+      params.permit({ search: :name }, { order: {} }, :page, :length)
 
    end
   end
