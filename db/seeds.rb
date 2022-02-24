@@ -21,7 +21,10 @@ User.create(name: "Gisele", email: "test@test.com", password: "123456", password
 
 User.create(name: "Paulo", email: "test3@test.com", password: "123456", password_confirmation: "123456")
 
-User.create(name: "Michael", email: "test2@test.com", password: "123456", password_confirmation: "123456")
+User.create(name: "Michael", email: "test2@test.com", password: "123456", password_confirmation: "123456", profile: 2)
+
+User.create(name: "Joao", email: "joao@gmail.com", password: "123456", password_confirmation: "123456", profile: 0)
+
 
 puts 'Criando Categorias'
 
