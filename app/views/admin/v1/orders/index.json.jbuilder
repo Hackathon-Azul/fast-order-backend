@@ -1,6 +1,6 @@
 json.orders do
     json.array! @loading_service.records do |order| 
-     json.(order, :client_name, :table_id, :user_id, :status)
+     json.(order, :id, :client_name, :table_id, :user_id, :status, :total)
   end
 end
 
