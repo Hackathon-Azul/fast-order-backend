@@ -15,6 +15,13 @@ Rails.application.routes.draw do
       resources :tables
       resources :order_items
       resources :bills
+
+      namespace :dashboard do
+        resources :sales_ranges, only: :index
+        resources :sales_ranges_for_user, only: :index
+        resources :summaries, only: :index
+        resources :top_five_products, only: :index
+      end
     end
   end
 
@@ -25,7 +32,7 @@ namespace :storefront, defaults: { format: :json } do
       resources :products, only: [:index, :show]
       resources :categories, only: :index
       resources :tables, only: :index
-      resources :orders, only: [:create, :show]
+      resources :orders, only: [:create, :show, :update]
     end
   end
 end
