@@ -1,6 +1,6 @@
 module Storefront::V1
   class OrdersController < ApiController
-  before_action :set_order, only: :show
+  before_action :set_order, only: [:show, :update]
 
   def create
     @order = Order.new(order_params)
@@ -14,10 +14,22 @@ module Storefront::V1
   def show
   end
 
+  def update
+    @order.attributes = order_params
+    save_order!
+  end
+
   private
 
   def set_order
     @order = Order.find(params[:id])
+  end
+
+  def save_order!
+    @order.save!
+    render :show
+  rescue
+    render_error(fields: @order.errors.messages)
   end
 
   def order_params
@@ -26,5 +38,6 @@ module Storefront::V1
        order_items_attributes: [:quantity, :product_id, :comments]
     )
   end
+
 end
 end
