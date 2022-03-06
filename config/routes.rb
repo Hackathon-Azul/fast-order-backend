@@ -32,7 +32,7 @@ namespace :storefront, defaults: { format: :json } do
       resources :products, only: [:index, :show]
       resources :categories, only: :index
       resources :tables, only: :index
-      resources :orders, only: [:create, :show, :update]
+      resources :orders, only: [:create, :show, :update, :index]
     end
   end
 end

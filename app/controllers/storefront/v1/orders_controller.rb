@@ -2,6 +2,10 @@ module Storefront::V1
   class OrdersController < ApiController
   before_action :set_order, only: [:show, :update]
 
+  def index
+    @orders = Order.all.order(:id)
+  end
+
   def create
     @order = Order.new(order_params)
     if @order.save
