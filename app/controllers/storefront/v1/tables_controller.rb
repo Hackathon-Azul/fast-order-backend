@@ -1,5 +1,5 @@
 module Storefront::V1
-  class TablesController < ApplicationController
+  class TablesController < ApiController
 
     def index
    #   @tables = Table.where(avaliable_table: true).order(:id)

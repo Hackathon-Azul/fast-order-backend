@@ -1,5 +1,5 @@
 module Storefront::V1
-  class ProductsController < ApplicationController
+  class ProductsController < ApiController
     before_action :load_products, only: [:show]
 
       def index
