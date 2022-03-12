@@ -3,7 +3,7 @@ module Storefront::V1
   before_action :set_order, only: [:show, :update]
 
   def index
-    @orders = Order.all.order(:id)
+    @orders = Order.all.order(:id).reverse_order
   end
 
   def create
