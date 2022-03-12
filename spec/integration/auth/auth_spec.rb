@@ -32,7 +32,7 @@ describe 'Auth API' do
     end
 
 
-    path '/auth/v1/user' do
+    path '/auth/v1/users' do
 
     post 'Create new user' do
       tags 'Auth'
@@ -71,7 +71,7 @@ describe 'Auth API' do
   end
 end
 
-  path '/auth/v1/user/password' do
+  path '/auth/v1/users/password' do
 
    post 'Forget password' do
      tags 'Auth'
