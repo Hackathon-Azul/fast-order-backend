@@ -7,9 +7,8 @@ module Storefront::V1
         @loading_service.call
       end
         
-        def show
-          @product = Product.find(params[:id])
-        end
+      def show; end
+
 
     private
 
