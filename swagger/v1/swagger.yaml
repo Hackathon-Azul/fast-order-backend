@@ -36,7 +36,7 @@ paths:
                         type: boolean
                       profile:
                         type: string
-  "/auth/v1/user":
+  "/auth/v1/users":
     post:
       summary: Create new user
       tags:
@@ -70,7 +70,7 @@ paths:
           description: created
         '422':
           description: invalid_request
-  "/auth/v1/user/password":
+  "/auth/v1/users/password":
     post:
       summary: Forget password
       tags:
