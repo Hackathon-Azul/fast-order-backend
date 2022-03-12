@@ -3,7 +3,1578 @@ openapi: 3.0.1
 info:
   title: API V1
   version: v1
-paths: {}
+paths:
+  "/auth/v1/users/sign_in":
+    post:
+      summary: User sign in
+      tags:
+      - Auth
+      responses:
+        '200':
+          description: auth found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      email:
+                        type: string
+                        format: email
+                      provider:
+                        type: string
+                      name:
+                        type: string
+                      uid:
+                        type: string
+                        format: email
+                      allow_password_change:
+                        type: boolean
+                      profile:
+                        type: string
+  "/auth/v1/user":
+    post:
+      summary: Create new user
+      tags:
+      - Auth
+      parameters:
+      - name: user
+        in: header
+        schema:
+          type: object
+          properties:
+            name:
+              type: string
+            password:
+              type: string
+            password_confirmation:
+              type: string
+            email:
+              type: string
+              format: email
+            profile:
+              type: string
+          required:
+          - name
+          - password
+          - password_confirmation
+          - email
+      responses:
+        '401':
+          description: unauthorized
+        '201':
+          description: created
+        '422':
+          description: invalid_request
+  "/auth/v1/user/password":
+    post:
+      summary: Forget password
+      tags:
+      - Auth
+      responses:
+        '200':
+          description: auth found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  email:
+                    type: string
+                    format: email
+                  redirect_url:
+                    type: string
+                required:
+                - id
+        '404':
+          description: user not found
+    patch:
+      summary: Change user password
+      tags:
+      - Auth
+      parameters:
+      - name: auth
+        in: header
+        schema:
+          type: object
+          properties:
+            reset_password_token:
+              type: string
+            password:
+              type: string
+            password_confirmation:
+              type: string
+          required:
+          - name
+      responses:
+        '200':
+          description: success
+        '404':
+          description: not_found
+  "/admin/v1/bills":
+    get:
+      summary: Get all Bills
+      tags:
+      - Bills
+      parameters:
+      - name: page
+        in: query
+        description: 'Page number. Default: 1'
+        required: false
+        schema:
+          type: integer
+      - name: length
+        in: query
+        description: Per page items.
+        required: false
+        schema:
+          type: integer
+      - name: search
+        in: query
+        description: Search bills by name.
+        required: false
+        schema:
+          type: string
+      - name: order
+        in: query
+        description: Bills ordenation.
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: bills found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  bills:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        order_id:
+                          type: integer
+                        status_bill:
+                          type: boolean
+                        total:
+                          type: integer
+                        created_at:
+                          type: string
+                  meta:
+                    type: object
+                    properties:
+                      page:
+                        type: integer
+                      length:
+                        type: integer
+                      total:
+                        type: integer
+                      total_pages:
+                        type: integer
+    post:
+      summary: Create new bill
+      tags:
+      - Bills
+      parameters:
+      - name: bill
+        in: header
+        schema:
+          type: object
+          properties:
+            status_bill:
+              type: boolean
+            order_id:
+              type: integer
+            total:
+              type: integer
+          required:
+          - status_bill
+          - order_id
+          - total
+      responses:
+        '401':
+          description: unauthorized
+        '201':
+          description: created
+        '422':
+          description: invalid_request
+  "/admin/v1/bills/{id}":
+    get:
+      summary: Find a bill by id
+      tags:
+      - Bills
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: bills found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  order_id:
+                    type: integer
+                  status_bill:
+                    type: boolean
+                  total:
+                    type: integer
+                  created_at:
+                    type: string
+                    format: datetime
+                required:
+                - id
+                - status_bill
+                - order_id
+                - total
+        '404':
+          description: bills not found
+    put:
+      summary: Update bill by id
+      tags:
+      - Bills
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: bill
+        in: header
+        schema:
+          type: object
+          properties:
+            status_bill:
+              type: boolean
+            order_id:
+              type: integer
+            total:
+              type: integer
+          required:
+          - id
+      responses:
+        '200':
+          description: success
+        '404':
+          description: not_found
+    delete:
+      summary: Delete bill by id
+      tags:
+      - Bills
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      - name: Authorization
+        in: header
+        default: Bearer c36e6eadde881ca7
+        schema:
+          type: string
+      responses:
+        '204':
+          description: no_content
+        '404':
+          description: not_found
+  "/admin/v1/categories":
+    get:
+      summary: Get all Categories
+      tags:
+      - Categories
+      parameters:
+      - name: page
+        in: query
+        description: 'Page number. Default: 1'
+        required: false
+        schema:
+          type: integer
+      - name: length
+        in: query
+        description: Per page items.
+        required: false
+        schema:
+          type: integer
+      - name: search
+        in: query
+        description: Search categories by name.
+        required: false
+        schema:
+          type: string
+      - name: order
+        in: query
+        description: Categories ordenation.
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: category found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  categories:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        title:
+                          type: string
+                  meta:
+                    type: object
+                    properties:
+                      page:
+                        type: integer
+                      length:
+                        type: integer
+                      total:
+                        type: integer
+                      total_pages:
+                        type: integer
+    post:
+      summary: Create new category
+      tags:
+      - Categories
+      parameters:
+      - name: category
+        in: header
+        schema:
+          type: object
+          properties:
+            title:
+              type: string
+          required:
+          - title
+      responses:
+        '401':
+          description: unauthorized
+        '201':
+          description: created
+        '422':
+          description: invalid_request
+  "/admin/v1/categories/{id}":
+    get:
+      summary: Find a category by id
+      tags:
+      - Categories
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: category found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  category:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      title:
+                        type: string
+                required:
+                - id
+                - title
+        '404':
+          description: category not found
+    put:
+      summary: Update category by id
+      tags:
+      - Categories
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: category
+        in: header
+        schema:
+          type: object
+          properties:
+            title:
+              type: string
+          required:
+          - title
+      responses:
+        '200':
+          description: success
+        '404':
+          description: not_found
+    delete:
+      summary: Delete category by id
+      tags:
+      - Categories
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      - name: Authorization
+        in: header
+        default: Bearer c36e6eadde881ca7
+        schema:
+          type: string
+      responses:
+        '204':
+          description: no_content
+        '404':
+          description: not_found
+  "/storefront/v1/categories":
+    get:
+      summary: Get all categories
+      tags:
+      - Categories
+      responses:
+        '200':
+          description: name found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  categories:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        title:
+                          type: string
+  "/admin/v1/dashboard/sales_ranges_for_user":
+    get:
+      summary: Get sales range by month or day for user
+      tags:
+      - Dashboard
+      parameters:
+      - name: min_date
+        in: query
+        format: date
+        description: 'Mininum sales range. Default: month'
+        required: false
+        schema:
+          type: string
+      - name: max_date
+        in: query
+        format: date
+        description: 'Maximum sales range. Default: month'
+        required: false
+        schema:
+          type: string
+      - name: user_id
+        in: query
+        description: 'User id. Default: 1'
+        required: false
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: sales for user found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  sales_ranges:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        date:
+                          type: string
+                          format: date
+                        total_sold:
+                          type: integer
+                          format: float
+                        amount_of_sales:
+                          type: integer
+                          format: float
+  "/admin/v1/dashboard/sales_ranges":
+    get:
+      summary: Get sales range by month or day
+      tags:
+      - Dashboard
+      parameters:
+      - name: min_date
+        in: query
+        format: date
+        description: 'Mininum sales range. Default: month'
+        required: false
+        schema:
+          type: string
+      - name: max_date
+        in: query
+        format: date
+        description: 'Maximum sales range. Default: month'
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: sales found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  sales_ranges:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        date:
+                          type: string
+                          format: date
+                        total_sold:
+                          type: integer
+                          format: float
+  "/admin/v1/dashboard/summaries":
+    get:
+      summary: Get production summary
+      tags:
+      - Dashboard
+      parameters:
+      - name: min_date
+        in: query
+        format: date
+        description: 'Mininum summary range. Default: month'
+        required: false
+        schema:
+          type: string
+      - name: max_date
+        in: query
+        format: date
+        description: 'Maximum summary range. Default: month'
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: summary found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  summary:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        users:
+                          type: integer
+                        products:
+                          type: integer
+                        orders:
+                          type: integer
+                        profit:
+                          type: integer
+  "/admin/v1/dashboard/top_five_products":
+    get:
+      summary: Get top 5 products
+      tags:
+      - Dashboard
+      parameters:
+      - name: min_date
+        in: query
+        format: date
+        description: 'Mininum products range. Default: month'
+        required: false
+        schema:
+          type: string
+      - name: max_date
+        in: query
+        format: date
+        description: 'Maximum products range. Default: month'
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: top 5 found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  top_five_products:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        product:
+                          type: string
+                        quantity:
+                          type: integer
+                        total_sold:
+                          type: integer
+  "/storefront/v1/orders":
+    get:
+      summary: Get all orders
+      tags:
+      - Orders
+      responses:
+        '200':
+          description: order found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  orders:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        client_name:
+                          type: string
+                        table_id:
+                          type: integer
+                        user_id:
+                          type: integer
+                        status:
+                          type: string
+                        total:
+                          type: integer
+    post:
+      summary: Create new order
+      tags:
+      - Orders
+      parameters:
+      - name: order
+        in: header
+        schema:
+          type: object
+          properties:
+            client_name:
+              type: string
+            table_id:
+              type: integer
+            user_id:
+              type: integer
+            order_items_attributes:
+              type: array
+              items:
+                type: object
+                properties:
+                  product_id:
+                    type: integer
+                  quantity:
+                    type: integer
+                  comments:
+                    type: string
+                    x-nullable: true
+          required:
+          - client_name
+          - table_id
+          - user_id
+          - product_id
+          - quantity
+      responses:
+        '401':
+          description: unauthorized
+        '201':
+          description: created
+        '422':
+          description: invalid_request
+  "/storefront/v1/orders/{id}":
+    get:
+      summary: Find a order by id
+      tags:
+      - Orders
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: order found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  client_name:
+                    type: string
+                  table_id:
+                    type: integer
+                  user_id:
+                    type: integer
+                  status:
+                    type: string
+                  total_value:
+                    type: integer
+                  order_items_attributes:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        quantity:
+                          type: integer
+                        comments:
+                          type: string
+                          x-nullable: true
+                        products:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                            name:
+                              type: string
+                            description:
+                              type: string
+                            price:
+                              type: integer
+                            avaiable:
+                              type: boolean
+                            category_id:
+                              type: integer
+                required:
+                - id
+                - client_name
+                - table_id
+                - user_id
+                - quantity
+                - product_id
+        '404':
+          description: order not found
+    put:
+      summary: Update order by id
+      tags:
+      - Orders
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: order
+        in: header
+        schema:
+          type: object
+          properties:
+            id:
+              type: integer
+            client_name:
+              type: string
+            table_id:
+              type: integer
+            user_id:
+              type: integer
+            status:
+              type: string
+            total_value:
+              type: integer
+            order_items_attributes:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  quantity:
+                    type: integer
+                  comments:
+                    type: string
+                    x-nullable: true
+                  products:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      name:
+                        type: string
+                      description:
+                        type: string
+                      price:
+                        type: integer
+                      avaiable:
+                        type: boolean
+                      category_id:
+                        type: integer
+          required:
+          - id
+      responses:
+        '200':
+          description: success
+        '404':
+          description: not_found
+  "/admin/v1/orders":
+    get:
+      summary: Get all Orders
+      tags:
+      - Orders
+      parameters:
+      - name: page
+        in: query
+        description: 'Page number. Default: 1'
+        required: false
+        schema:
+          type: integer
+      - name: length
+        in: query
+        description: Per page items.
+        required: false
+        schema:
+          type: integer
+      - name: search
+        in: query
+        description: Search bills by name.
+        required: false
+        schema:
+          type: string
+      - name: order
+        in: query
+        description: Bills ordenation.
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: order found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  orders:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        client_name:
+                          type: string
+                        table_id:
+                          type: integer
+                        user_id:
+                          type: integer
+                        status:
+                          type: string
+                        total:
+                          type: integer
+                  meta:
+                    type: object
+                    properties:
+                      page:
+                        type: integer
+                      length:
+                        type: integer
+                      total:
+                        type: integer
+                      total_pages:
+                        type: integer
+  "/admin/v1/orders/{id}":
+    get:
+      summary: Find a order by id
+      tags:
+      - Orders
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: order found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  order:
+                    type: object
+                    properties:
+                      client_name:
+                        type: string
+                      table_id:
+                        type: integer
+                      user_id:
+                        type: integer
+                      status:
+                        type: string
+                      total:
+                        type: integer
+                required:
+                - id
+                - client_name
+                - table_id
+                - user_id
+                - quantity
+                - product_id
+        '404':
+          description: order not found
+  "/storefront/v1/products":
+    get:
+      summary: Get all products
+      tags:
+      - Products
+      responses:
+        '200':
+          description: product found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  products:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        name:
+                          type: string
+                        description:
+                          type: string
+                        price:
+                          type: integer
+                        category:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                            title:
+                              type: string
+                            created_at:
+                              type: string
+                              format: datetime
+                            updated_at:
+                              type: string
+                              format: datetime
+  "/storefront/v1/products/{id}":
+    get:
+      summary: Find a product by id
+      tags:
+      - Products
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: product found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  name:
+                    type: string
+                  description:
+                    type: string
+                  price:
+                    type: integer
+                  category:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      title:
+                        type: string
+                      created_at:
+                        type: string
+                        format: datetime
+                      updated_at:
+                        type: string
+                        format: datetime
+                required:
+                - id
+        '404':
+          description: product not found
+  "/admin/v1/products":
+    get:
+      summary: Get all Products
+      tags:
+      - Products
+      parameters:
+      - name: page
+        in: query
+        description: 'Page number. Default: 1'
+        required: false
+        schema:
+          type: integer
+      - name: length
+        in: query
+        description: Per page items.
+        required: false
+        schema:
+          type: integer
+      - name: search
+        in: query
+        description: Search bills by name.
+        required: false
+        schema:
+          type: string
+      - name: order
+        in: query
+        description: Bills ordenation.
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: bills found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  products:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        name:
+                          type: string
+                        description:
+                          type: string
+                        price:
+                          type: integer
+                        avaiable:
+                          type: boolean
+                        category_id:
+                          type: integer
+                  meta:
+                    type: object
+                    properties:
+                      page:
+                        type: integer
+                      length:
+                        type: integer
+                      total:
+                        type: integer
+                      total_pages:
+                        type: integer
+    post:
+      summary: Create new product
+      tags:
+      - Products
+      parameters:
+      - name: product
+        in: header
+        schema:
+          type: object
+          properties:
+            name:
+              type: string
+            description:
+              type: string
+            price:
+              type: integer
+            avaiable:
+              type: boolean
+            category_id:
+              type: integer
+          required:
+          - name
+          - description
+          - price
+          - avaiable
+          - category_id
+      responses:
+        '401':
+          description: unauthorized
+        '201':
+          description: created
+        '422':
+          description: invalid_request
+  "/admin/v1/products/{id}":
+    get:
+      summary: Find a product by id
+      tags:
+      - Products
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: product found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  product:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      name:
+                        type: string
+                required:
+                - id
+                - name
+        '404':
+          description: product not found
+    put:
+      summary: Update product by id
+      tags:
+      - Products
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: product
+        in: header
+        schema:
+          type: object
+          properties:
+            name:
+              type: string
+            description:
+              type: string
+            price:
+              type: integer
+            avaiable:
+              type: boolean
+            category_id:
+              type: integer
+          required:
+          - name
+          - description
+          - price
+          - avaiable
+          - category_id
+      responses:
+        '200':
+          description: success
+        '404':
+          description: not_found
+    delete:
+      summary: Delete product by id
+      tags:
+      - Products
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      - name: Authorization
+        in: header
+        default: Bearer c36e6eadde881ca7
+        schema:
+          type: string
+      responses:
+        '204':
+          description: no_content
+        '404':
+          description: not_found
+  "/admin/v1/tables":
+    get:
+      summary: Get all Tables
+      tags:
+      - Tables
+      parameters:
+      - name: page
+        in: query
+        description: 'Page number. Default: 1'
+        required: false
+        schema:
+          type: integer
+      - name: length
+        in: query
+        description: Per page items.
+        required: false
+        schema:
+          type: integer
+      - name: search
+        in: query
+        description: Search tables by name.
+        required: false
+        schema:
+          type: string
+      - name: order
+        in: query
+        description: Tables ordenation.
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: tables found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  tables:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        table_number:
+                          type: integer
+                        avaliable_table:
+                          type: boolean
+                  meta:
+                    type: object
+                    properties:
+                      page:
+                        type: integer
+                      length:
+                        type: integer
+                      total:
+                        type: integer
+                      total_pages:
+                        type: integer
+    post:
+      summary: Create new tables
+      tags:
+      - Tables
+      parameters:
+      - name: table
+        in: header
+        schema:
+          type: object
+          properties:
+            table_number:
+              type: integer
+            avaliable_table:
+              type: boolean
+          required:
+          - table_number
+          - avaliable_table
+      responses:
+        '401':
+          description: unauthorized
+        '201':
+          description: created
+        '422':
+          description: invalid_request
+  "/admin/v1/tables/{id}":
+    get:
+      summary: Find a table by id
+      tags:
+      - Tables
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: table found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  product:
+                    type: object
+                    properties:
+                      table_number:
+                        type: integer
+                      avaliable_table:
+                        type: boolean
+                required:
+                - table_number
+                - avaliable_table
+        '404':
+          description: table not found
+    put:
+      summary: Update table by id
+      tags:
+      - Tables
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: table
+        in: header
+        schema:
+          type: object
+          properties:
+            table_number:
+              type: integer
+            avaliable_table:
+              type: boolean
+          required:
+          - table_number
+          - avaliable_table
+      responses:
+        '200':
+          description: success
+        '404':
+          description: not_found
+    delete:
+      summary: Delete table by id
+      tags:
+      - Tables
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      - name: Authorization
+        in: header
+        default: Bearer c36e6eadde881ca7
+        schema:
+          type: string
+      responses:
+        '204':
+          description: no_content
+        '404':
+          description: not_found
+  "/storefront/v1/tables":
+    get:
+      summary: Get all tables
+      tags:
+      - Tables
+      responses:
+        '200':
+          description: tables found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  tables:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        table_number:
+                          type: string
+                        avaliable_table:
+                          type: boolean
+  "/admin/v1/users":
+    get:
+      summary: Get all Users
+      tags:
+      - Users
+      parameters:
+      - name: page
+        in: query
+        description: 'Page number. Default: 1'
+        required: false
+        schema:
+          type: integer
+      - name: length
+        in: query
+        description: Per page items.
+        required: false
+        schema:
+          type: integer
+      - name: search
+        in: query
+        description: Search users by name.
+        required: false
+        schema:
+          type: string
+      - name: order
+        in: query
+        description: Users ordenation.
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: name found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  users:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        name:
+                          type: string
+                        email:
+                          type: string
+                          format: email
+                        profile:
+                          type: string
+                  meta:
+                    type: object
+                    properties:
+                      page:
+                        type: integer
+                      length:
+                        type: integer
+                      total:
+                        type: integer
+                      total_pages:
+                        type: integer
+    post:
+      summary: Create new users
+      tags:
+      - Users
+      parameters:
+      - name: user
+        in: header
+        schema:
+          type: object
+          properties:
+            name:
+              type: string
+            password:
+              type: string
+            password_confirmation:
+              type: string
+            email:
+              type: string
+              format: email
+            profile:
+              type: string
+          required:
+          - name
+          - password
+          - password_confirmation
+          - email
+      responses:
+        '401':
+          description: unauthorized
+        '201':
+          description: created
+        '422':
+          description: invalid_request
+  "/admin/v1/users/{id}":
+    get:
+      summary: Find a user by id
+      tags:
+      - Users
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: user found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      name:
+                        type: string
+                      email:
+                        type: string
+                        format: email
+                      profile:
+                        type: string
+                required:
+                - id
+        '404':
+          description: user not found
+    put:
+      summary: Update user by id
+      tags:
+      - Users
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: user
+        in: header
+        schema:
+          type: object
+          properties:
+            name:
+              type: string
+            email:
+              type: string
+              format: email
+            profile:
+              type: string
+          required:
+          - name
+      responses:
+        '200':
+          description: success
+        '404':
+          description: not_found
+    delete:
+      summary: Delete user by id
+      tags:
+      - Users
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      - name: Authorization
+        in: header
+        default: Bearer c36e6eadde881ca7
+        schema:
+          type: string
+      responses:
+        '204':
+          description: no_content
+        '404':
+          description: not_found
 servers:
 - url: https://{defaultHost}
   variables:
